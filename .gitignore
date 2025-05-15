@@ -1,0 +1,8 @@
+/Backend/node_modules
+/Backend/uploads
+/Backend/.env
+/Backend/dist
+/Backend/src/lib
+
+
+/frontend/node_modules
