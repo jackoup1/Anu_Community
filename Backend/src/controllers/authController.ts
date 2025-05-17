@@ -25,11 +25,11 @@ export async function login(req :Request, res: Response) {
         
 
         if(user.role === "ADMIN"){
-            const token = jwt.sign({id: user.id, email: user.email},process.env.JWT_SECRET!,{expiresIn: "24h"});
+            const token = jwt.sign({id: user.id, email: user.email, role: "ADMIN"},process.env.JWT_SECRET!,{expiresIn: "24h"});
             res.json({token});
         }
         else{
-            const token = jwt.sign({id: user.id, email: user.email },process.env.JWT_SECRET!,{expiresIn:"1y"});
+            const token = jwt.sign({id: user.id, email: user.email, role: "USER" },process.env.JWT_SECRET!,{expiresIn:"1y"});
             res.json({token});
         }
 

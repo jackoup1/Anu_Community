@@ -65,4 +65,44 @@ export async function addNewAssignment(req: AuthRequest, res: Response) {
     }
 }
 
+export async function addComment(req: AuthRequest, res: Response) {
+    const { assignmentId, content } = req.body;
+  try {
+    const comment = await prisma.comment.create({
+      data: {
+        content: content,
+        creator: { connect: { id: req.user.id } },
+        assignment: { connect: { id: assignmentId } }
+      }
+    });
+
+    console.log('Comment created:', comment);
+    return ;
+
+  } catch (error) {
+    console.error('Error adding comment:', error);
+    res.status(500).json({ message: 'Failed to add comment' });
+    return;
+  }
+}
+
+export async function deleteAssignment(req: AuthRequest, res: Response) {
+    const { assignmentId } = req.body;
+    try {
+        await prisma.assignment.delete({
+            where: {
+                id: assignmentId,
+            },
+        });
+        console.log(`Assignment with ID ${assignmentId} deleted by user ${req.user.id}`);
+        res.status(200).json({ message: "assignment deleted" });
+        return;
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "internal error please try again" });
+        return;
+    }
+}
+
+
   

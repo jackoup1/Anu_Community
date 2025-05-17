@@ -1,11 +1,13 @@
 import { Router } from "express";
-import {getAssignments, addNewAssignment } from "../controllers/assignmentsController";
-import { authUser } from "../middlewares/AuthMiddleware";
+import {getAssignments, addNewAssignment, addComment, deleteAssignment} from "../controllers/assignmentsController";
+import { authUser,authorizeAssignmentDelete } from "../middlewares/AuthMiddleware";
 const router = Router();
 
 router.get("/",getAssignments);
 
 
-router.post("/",authUser, addNewAssignment);
+router.post("/addAssignment",authUser, addNewAssignment);
+router.post("/addComment",authUser, addComment);
+router.delete("/deleteAssignment", authorizeAssignmentDelete, deleteAssignment);
 
 export default router;

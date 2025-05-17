@@ -21,6 +21,7 @@ model User {
   password           String
   role               Role         @default(USER)
   assignmentsCreated Assignment[]
+  Comment            Comment[]
 }
 
 enum Role {
@@ -35,16 +36,28 @@ model Subject {
 }
 
 model Assignment {
-  id          Int      @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   title       String
   description String?
   dueDate     DateTime
   pdfUrl      String?
-  comments     String[]
+  comments    Comment[] // one-to-many relationship
 
-  creatorId Int  
+  creatorId Int
   creator   User @relation(fields: [creatorId], references: [id])
 
-  subjectId Int     
+  subjectId Int
   subject   Subject @relation(fields: [subjectId], references: [id])
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  content   String
+  createdAt DateTime @default(now())
+
+  creatorId Int
+  creator   User @relation(fields: [creatorId], references: [id])
+
+  assignment   Assignment @relation(fields: [assignmentId], references: [id])
+  assignmentId Int
 }

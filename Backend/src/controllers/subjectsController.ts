@@ -9,7 +9,7 @@ export async function getSubjects(req:Request, res: Response) {
 
     }catch(err){
         console.log(err)
-        res.status(5001).json({message: "internal server error please try again later"})
+        res.status(501).json({message: "internal server error please try again later"})
         return;
     }
 }
