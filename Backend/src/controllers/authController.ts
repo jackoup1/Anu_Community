@@ -11,7 +11,7 @@ export async function login(req :Request, res: Response) {
 
         const user = await prisma.user.findUnique({
             where:{email},
-            select:{id:true, email: true, password: true, role: true}}
+            select:{id:true, email: true, password: true, role: true, level:true, department: true}}
         );
         if(!user){
             res.status(404).json({message:"user not found"});
@@ -25,14 +25,29 @@ export async function login(req :Request, res: Response) {
         
 
         if(user.role === "ADMIN"){
-            const token = jwt.sign({id: user.id, email: user.email, role: "ADMIN"},process.env.JWT_SECRET!,{expiresIn: "24h"});
+            const token = jwt.sign({
+                id: user.id,
+                email: user.email,
+                role: "ADMIN",
+                level: user.level,
+                department: user.department
+                },
+                process.env.JWT_SECRET!,{expiresIn: "24h"}
+            );
             res.json({token});
         }
         else{
-            const token = jwt.sign({id: user.id, email: user.email, role: "USER" },process.env.JWT_SECRET!,{expiresIn:"1y"});
+            const token = jwt.sign({
+                id: user.id,
+                email: user.email,
+                role: "USER",
+                level: user.level,
+                department: user.department
+                },
+                process.env.JWT_SECRET!,{expiresIn:"1y"}
+            );
             res.json({token});
         }
-
     }catch(err) {
         console.error(err);
         res.status(500).json({message:"login failed"});
@@ -41,7 +56,7 @@ export async function login(req :Request, res: Response) {
 
 
 export async function signUp(req:Request, res: Response) {
-    const {username, email, password} = req.body; 
+    const {username, department, level, email, password} = req.body; 
 
     try {
         const existingEmail = await prisma.user.findUnique({where: {email}, select:{email: true}});
@@ -60,6 +75,8 @@ export async function signUp(req:Request, res: Response) {
         await prisma.user.create({
             data:{
                 username,
+                department,
+                level,
                 email,
                 password: hashedPassword,
             }

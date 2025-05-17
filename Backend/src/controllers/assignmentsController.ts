@@ -30,12 +30,14 @@ export async function getAssignments(req: Request, res: Response) {
 
 
 export async function addNewAssignment(req: AuthRequest, res: Response) {
-    const {
+  
+    const{
       title,
       description,
       dueDate,
       pdfUrl,
       subjectId,
+      departments
     } = req.body;
   
     try {
@@ -55,6 +57,13 @@ export async function addNewAssignment(req: AuthRequest, res: Response) {
               id: subjectId,
             },
           },
+          departments:{
+            connect: departments.map(
+              (departmentId: Number) => ({
+              id: departmentId,
+              })
+            ),
+          }
         },
       });
       console.log(`Title: ${title}, Subject ID: ${subjectId}`)
