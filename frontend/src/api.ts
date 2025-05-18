@@ -28,6 +28,15 @@ export const getAssignments = async () => {
   return res.json();
 };
 
+export const getDepartments = async () => {
+  const res = await fetch(`${BASE_URL}/api/departments`);
+  if (!res.ok) {
+    throw new Error("Failed to fetch departments");
+  }
+  return res.json(); // returns an array of departments
+};
+
+
 export const createAssignment = async (assignmentData: any) => {
   const token = localStorage.getItem("token");
   const res = await fetch(`${BASE_URL}/api/assignments/addAssignment`, {
