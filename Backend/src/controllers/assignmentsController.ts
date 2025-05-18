@@ -57,13 +57,6 @@ export async function addNewAssignment(req: AuthRequest, res: Response) {
               id: subjectId,
             },
           },
-          departments:{
-            connect: departments.map(
-              (departmentId: Number) => ({
-              id: departmentId,
-              })
-            ),
-          }
         },
       });
       console.log(`Title: ${title}, Subject ID: ${subjectId}`)

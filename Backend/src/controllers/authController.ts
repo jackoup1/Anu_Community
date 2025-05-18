@@ -56,7 +56,7 @@ export async function login(req :Request, res: Response) {
 
 
 export async function signUp(req:Request, res: Response) {
-    const {username, department, level, email, password} = req.body; 
+    const {username, departmentId, level, email, password} = req.body; 
 
     try {
         const existingEmail = await prisma.user.findUnique({where: {email}, select:{email: true}});
@@ -75,7 +75,7 @@ export async function signUp(req:Request, res: Response) {
         await prisma.user.create({
             data:{
                 username,
-                department,
+                departmentId,
                 level,
                 email,
                 password: hashedPassword,

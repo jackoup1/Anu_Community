@@ -28,7 +28,6 @@ model Department {
   name        String       @unique
   users       User[]
   subjects    Subject[]
-  assignments Assignment[]
 }
 
 model Subject {
@@ -51,8 +50,6 @@ model Assignment {
 
   subjectId Int
   subject   Subject @relation(fields: [subjectId], references: [id])
-
-  departments Department[]
   comments Comment[]
 }
 
