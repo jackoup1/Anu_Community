@@ -64,10 +64,10 @@ export default function AddAssignment() {
 
     const newAssignment = {
       title,
-      subjectId: Number(subjectId),
       description,
       dueDate,
       pdfUrl,
+      subjectId: Number(subjectId),
     };
 
     try {

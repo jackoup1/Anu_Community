@@ -11,11 +11,11 @@ export const loginUser = async (email: string, password: string) => {
 };
 
 
-export const signupUser = async (email: string, password: string, username: string) => {
+export const signupUser = async (email: string, password: string, username: string, departmentId: Number, level: String) => {
   const res = await fetch(`${BASE_URL}/api/authenticate/signup`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password, username }),
+    body: JSON.stringify({ email, password, username,departmentId, level }),
   });
   return res.json();
 };
@@ -30,7 +30,7 @@ export const getAssignments = async () => {
 
 export const createAssignment = async (assignmentData: any) => {
   const token = localStorage.getItem("token");
-  const res = await fetch(`${BASE_URL}/api/assignments/`, {
+  const res = await fetch(`${BASE_URL}/api/assignments/addAssignment`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
