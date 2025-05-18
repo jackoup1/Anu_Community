@@ -5,70 +5,81 @@ import { AuthRequest } from "../middlewares/AuthMiddleware";
 
 
 
-export async function getAssignments(req: Request, res: Response) {
-    try {
-        const assignments = await prisma.assignment.findMany({
-            orderBy: { dueDate: "asc" },
-            include: {
-              subject: {
-                select: {
-                  name: true,
-                },
-              },
+export async function getAssignments(req: AuthRequest, res: Response) {
+  const userId = req.user.id;
+  const userDepartmentId = req.user.departmentId;
+
+   try {
+    const assignments = await prisma.assignment.findMany({
+      where: {
+        subject: {
+          departments: {
+            some: {
+              id: userDepartmentId,
             },
-          })
-        res.json(assignments);
-        return;
-    }
-    catch (er) {
-        res.status(5000).json({ message: "internal error please try again" });
-        console.error(er);
-        return;
-    }
+          },
+        },
+      },
+      orderBy: { dueDate: "asc" },
+      include: {
+        subject: {
+          select: {
+            name: true,
+          },
+        },
+      },
+    });
+
+    res.json(assignments);
+    return;
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to get assignments" });
+  }
 }
+
 
 
 
 export async function addNewAssignment(req: AuthRequest, res: Response) {
-  
-    const{
-      title,
-      description,
-      dueDate,
-      pdfUrl,
-      subjectId,
-      departments
-    } = req.body;
-  
-    try {
-      await prisma.assignment.create({
-        data: {
-          title,
-          description,
-          dueDate: new Date(dueDate),
-          pdfUrl,
-          creator: {
-            connect: {
-              id: req.user.id,
-            },
-          },
-          subject: {
-            connect: {
-              id: subjectId,
-            },
+
+  const {
+    title,
+    description,
+    dueDate,
+    pdfUrl,
+    subjectId,
+  } = req.body;
+
+  try {
+    await prisma.assignment.create({
+      data: {
+        title,
+        description,
+        dueDate: new Date(dueDate),
+        pdfUrl,
+        creator: {
+          connect: {
+            id: req.user.id,
           },
         },
-      });
-      console.log(`Title: ${title}, Subject ID: ${subjectId}`)
-      res.status(201).json({ message: 'assignment created' });
-    } catch (err) {
-      console.error(err);
-      res.status(500).json({ message: 'creation failed please try again' });
-    }
+        subject: {
+          connect: {
+            id: subjectId,
+          },
+        },
+      },
+    });
+    console.log(`Title: ${title}, Subject ID: ${subjectId}`)
+    res.status(201).json({ message: 'assignment created' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'creation failed please try again' });
+  }
 }
 
 export async function addComment(req: AuthRequest, res: Response) {
-    const { assignmentId, content } = req.body;
+  const { assignmentId, content } = req.body;
   try {
     const comment = await prisma.comment.create({
       data: {
@@ -79,7 +90,7 @@ export async function addComment(req: AuthRequest, res: Response) {
     });
 
     console.log('Comment created:', comment);
-    return ;
+    return;
 
   } catch (error) {
     console.error('Error adding comment:', error);
@@ -89,22 +100,21 @@ export async function addComment(req: AuthRequest, res: Response) {
 }
 
 export async function deleteAssignment(req: AuthRequest, res: Response) {
-    const { assignmentId } = req.body;
-    try {
-        await prisma.assignment.delete({
-            where: {
-                id: assignmentId,
-            },
-        });
-        console.log(`Assignment with ID ${assignmentId} deleted by user ${req.user.id}`);
-        res.status(200).json({ message: "assignment deleted" });
-        return;
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "internal error please try again" });
-        return;
-    }
+  const { assignmentId } = req.body;
+  try {
+    await prisma.assignment.delete({
+      where: {
+        id: assignmentId,
+      },
+    });
+    console.log(`Assignment with ID ${assignmentId} deleted by user ${req.user.id}`);
+    res.status(200).json({ message: "assignment deleted" });
+    return;
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "internal error please try again" });
+    return;
+  }
 }
 
 
-  

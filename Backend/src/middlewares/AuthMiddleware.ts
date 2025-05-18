@@ -19,11 +19,10 @@ export function authUser(req:AuthRequest, res: Response, next: NextFunction) {
         const secretKey = process.env.JWT_SECRET as string;
         const decoded = jwt.verify(token, secretKey);
         req.user = decoded;
-        console.log(`---Created BY: ${req.user.email}`);
         next();
       } catch (error) {
         res.status(403).json({ message: "Invalid token" });
-        console.error("Invalid token", error);
+        console.error("Invalid token");
         return;
       }
 }

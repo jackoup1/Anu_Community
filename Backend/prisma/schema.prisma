@@ -24,10 +24,10 @@ model User {
 }
 
 model Department {
-  id          Int          @id @default(autoincrement())
-  name        String       @unique
-  users       User[]
-  subjects    Subject[]
+  id       Int       @id @default(autoincrement())
+  name     String    @unique
+  users    User[]
+  subjects Subject[]
 }
 
 model Subject {
@@ -44,13 +44,12 @@ model Assignment {
   dueDate     DateTime
   pdfUrl      String?
 
-
   creatorId Int
   creator   User @relation(fields: [creatorId], references: [id])
 
   subjectId Int
-  subject   Subject @relation(fields: [subjectId], references: [id])
-  comments Comment[]
+  subject   Subject   @relation(fields: [subjectId], references: [id])
+  comments  Comment[]
 }
 
 model Comment {

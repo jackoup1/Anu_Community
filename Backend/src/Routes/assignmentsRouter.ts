@@ -3,7 +3,7 @@ import {getAssignments, addNewAssignment, addComment, deleteAssignment} from "..
 import { authUser,authorizeAssignmentDelete } from "../middlewares/AuthMiddleware";
 const router = Router();
 
-router.get("/",getAssignments);
+router.get("/",authUser,getAssignments);
 
 
 router.post("/addAssignment",authUser, addNewAssignment);

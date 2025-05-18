@@ -11,7 +11,7 @@ export async function login(req :Request, res: Response) {
 
         const user = await prisma.user.findUnique({
             where:{email},
-            select:{id:true, email: true, password: true, role: true, level:true, department: true}}
+            select:{id:true, email: true, password: true, role: true, level:true, departmentId: true}}
         );
         if(!user){
             res.status(404).json({message:"user not found"});
@@ -30,7 +30,7 @@ export async function login(req :Request, res: Response) {
                 email: user.email,
                 role: "ADMIN",
                 level: user.level,
-                department: user.department
+                departmentId: user.departmentId
                 },
                 process.env.JWT_SECRET!,{expiresIn: "24h"}
             );
@@ -42,7 +42,7 @@ export async function login(req :Request, res: Response) {
                 email: user.email,
                 role: "USER",
                 level: user.level,
-                department: user.department
+                departmentId: user.departmentId
                 },
                 process.env.JWT_SECRET!,{expiresIn:"1y"}
             );

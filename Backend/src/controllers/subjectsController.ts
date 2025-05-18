@@ -8,12 +8,6 @@ export async function getSubjects(req: Request, res: Response) {
                 select: {
                     id: true,
                     name: true,
-                    departments: {
-                        select: {
-                            id: true,
-                            name: true
-                        }
-                    }
                 }
             });
         res.json(subjects);
