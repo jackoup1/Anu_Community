@@ -20,7 +20,7 @@ export default function Assignments() {
         const data = await getAssignments();
         setAssignments(data);
       } catch {
-        alert("Failed to load assignments");
+        alert("you need to login first");
         navigate("/login");
       }
     })();

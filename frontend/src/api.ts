@@ -25,8 +25,14 @@ export const getAssignments = async () => {
   const res = await fetch(`${BASE_URL}/api/assignments/`, {
     headers: { Authorization: `Bearer ${token}` },
   });
+
+  if (!res.ok) {
+    throw new Error(`HTTP error! status: ${res.status}`);
+  }
+
   return res.json();
 };
+
 
 export const getDepartments = async () => {
   const res = await fetch(`${BASE_URL}/api/departments`);
