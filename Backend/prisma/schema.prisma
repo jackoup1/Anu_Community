@@ -59,10 +59,10 @@ model Comment {
   createdAt DateTime @default(now())
 
   creatorId Int
-  creator   User @relation(fields: [creatorId], references: [id])
+  creator   User @relation(fields: [creatorId], references: [id], onDelete: Cascade)
 
   assignmentId Int
-  assignment   Assignment @relation(fields: [assignmentId], references: [id])
+  assignment   Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
 }
 
 enum Role {
