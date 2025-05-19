@@ -23,6 +23,7 @@ export async function getSubjects(req: Request, res: Response) {
 export async function addSubject(req: Request, res: Response) {
     const { name,departmentIds } = req.body;
     if(!name || !departmentIds) {
+
         res.status(400).json({ message: "name and departments are required" });
         return;
     }
@@ -42,6 +43,4 @@ export async function addSubject(req: Request, res: Response) {
         res.status(501).json({ message: "internal server error please try again later" })
         return;
     }
-
 }
-    

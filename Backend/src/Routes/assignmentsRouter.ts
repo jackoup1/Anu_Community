@@ -1,11 +1,7 @@
 import { Router } from "express";
-import {
-  getAssignments,
-  addNewAssignment,
-  addComment,
-  deleteAssignment,
-  getComments, 
-} from "../controllers/assignmentsController";
+import { getAssignments, addNewAssignment,deleteAssignment,
+        addComment, getComments, 
+      } from "../controllers/assignmentsController";
 import {
   authUser,
   authorizeAssignmentDelete,
@@ -13,11 +9,11 @@ import {
 
 const router = Router();
 
-router.get("/:id/comments", authUser, getComments);
-
 router.get("/", authUser, getAssignments);
 router.post("/addAssignment", authUser, addNewAssignment);
-router.post("/addComment", authUser, addComment);
 router.delete("/deleteAssignment", authorizeAssignmentDelete, deleteAssignment);
+
+router.get("/:id/comments", authUser, getComments);
+router.post("/addComment", authUser, addComment);
 
 export default router;

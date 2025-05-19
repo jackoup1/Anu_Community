@@ -108,7 +108,7 @@ export const uploadPdf = async (file: File, subjectName: string) => {
   formData.append('subjectName', subjectName);
   formData.append('pdfFile', file);
 
-  const res = await fetch(`${BASE_URL}/api/upload`, {
+  const res = await fetch(`${BASE_URL}/api/pdf/`, {
     method: "POST",
     headers: { Authorization: `Bearer ${token}` },
     body: formData,
@@ -136,22 +136,17 @@ export const servePdf = async (pdfUrl: string) => {
 };
 
 
-export const downloadPdf = async (pdfUrl: string) => {
-  try {
-    const response = await fetch(`${BASE_URL}/api/upload/${pdfUrl}`);
-    const blob = await response.blob();
-    const url = window.URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.setAttribute('download', 'Bc_sheet.pdf');
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-    window.URL.revokeObjectURL(url);
-  } catch (error) {
-    console.error('Error downloading the PDF', error);
-  }
+export const downloadPdf = (pdfUrl: string) => {
+  const [subject, filename] = pdfUrl.split('/');
+  const link = document.createElement("a");
+  link.href = `${BASE_URL}/api/pdf/download/${subject}/${filename}`;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
 };
+
+
 export const addComment = async (assignmentId: number, content: string) => {
   const token = localStorage.getItem("token");
 

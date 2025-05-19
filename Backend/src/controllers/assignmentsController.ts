@@ -38,9 +38,6 @@ export async function getAssignments(req: AuthRequest, res: Response) {
   }
 }
 
-
-
-
 export async function addNewAssignment(req: AuthRequest, res: Response) {
 
   const {
@@ -78,6 +75,26 @@ export async function addNewAssignment(req: AuthRequest, res: Response) {
   }
 }
 
+export async function deleteAssignment(req: AuthRequest, res: Response) {
+  const { assignmentId } = req.body;
+  try {
+    await prisma.assignment.delete({
+      where: {
+        id: assignmentId,
+      },
+    });
+    console.log(`Assignment with ID ${assignmentId} deleted by user ${req.user.id}`);
+    res.status(200).json({ message: "assignment deleted" });
+    return;
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "internal error please try again" });
+    return;
+  }
+}
+
+
+
 export async function addComment(req: AuthRequest, res: Response) {
   const { assignmentId, content } = req.body;
   try {
@@ -101,24 +118,6 @@ export async function addComment(req: AuthRequest, res: Response) {
   }
 }
 
-export async function deleteAssignment(req: AuthRequest, res: Response) {
-  const { assignmentId } = req.body;
-  try {
-    await prisma.assignment.delete({
-      where: {
-        id: assignmentId,
-      },
-    });
-    console.log(`Assignment with ID ${assignmentId} deleted by user ${req.user.id}`);
-    res.status(200).json({ message: "assignment deleted" });
-    return;
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "internal error please try again" });
-    return;
-  }
-}
-// In assignmentsController.ts
 export async function getComments(req: Request, res: Response) {
   const assignmentId = parseInt(req.params.id);
   try {
