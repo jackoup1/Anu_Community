@@ -66,3 +66,11 @@ export async function authorizeAssignmentDelete(req: AuthRequest, res: Response,
         return;
       } 
 }
+
+export function authorizeAdmin(req: AuthRequest, res: Response, next: NextFunction) {
+    if (req.user.role !== "ADMIN") {
+        res.status(403).json({ message: "You are not authorized to access this resource" });
+        return;
+    }
+    next();
+}

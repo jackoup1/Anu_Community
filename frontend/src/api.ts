@@ -88,6 +88,19 @@ export const getSubjects = async () => {
   return res.json(); 
 };
 
+export async function createSubject(subjectData: { name: string; departmentIds: number[] }) {
+  const res = await fetch(`${BASE_URL}/api/subjects/addSubject`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${localStorage.getItem('token')}`,
+    },
+    body: JSON.stringify(subjectData),
+  });
+  if (!res.ok) throw new Error('Failed to create subject');
+  return await res.json();
+}
+
 // API call to upload PDF file
 export const uploadPdf = async (file: File, subjectName: string) => {
   const token = localStorage.getItem("token");
