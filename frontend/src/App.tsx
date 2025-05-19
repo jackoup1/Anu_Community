@@ -1,7 +1,9 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
-import Login from "./pages/Login"
-import Signup from "./pages/Signup"
-import Assignments from "./pages/Assignments"
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Layout from "./components/layout"
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
+
+import Assignments from "./pages/Assignments";
 import AddAssignment from './pages/addAssignment';
 import AddSubject from './pages/admin/AddSubject';
 
@@ -9,14 +11,38 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Assignments />} />
+        {/* Public routes */}
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-        <Route path="/add-assignment" element={<AddAssignment />} />
-        <Route path="/add-subject" element={<AddSubject />} />
+
+        {/* Protected routes with Layout */}
+        <Route
+          path="/"
+          element={
+            <Layout>
+              <Assignments />
+            </Layout>
+          }
+        />
+        <Route
+          path="/add-assignment"
+          element={
+            <Layout>
+              <AddAssignment />
+            </Layout>
+          }
+        />
+        <Route
+          path="/add-subject"
+          element={
+            <Layout>
+              <AddSubject />
+            </Layout>
+          }
+        />
       </Routes>
     </Router>
-  )
+  );
 }
 
-export default App
+export default App;
