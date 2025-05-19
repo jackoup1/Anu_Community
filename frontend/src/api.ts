@@ -139,4 +139,39 @@ export const downloadPdf = async (pdfUrl: string) => {
     console.error('Error downloading the PDF', error);
   }
 };
+export const addComment = async (assignmentId: number, content: string) => {
+  const token = localStorage.getItem("token");
+
+  const res = await fetch(`${BASE_URL}/api/assignments/addComment`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ assignmentId, content }),
+  });
+
+  if (!res.ok) {
+    const error = await res.json();
+    throw new Error(error.message || "Failed to add comment");
+  }
+
+  return res.json();
+};
+export const getComments = async (assignmentId: number) => {
+  const token = localStorage.getItem("token");
+
+  const res = await fetch(`${BASE_URL}/api/assignments/${assignmentId}/comments`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!res.ok) {
+    const error = await res.json();
+    throw new Error(error.message || "Failed to fetch comments");
+  }
+
+  return res.json();
+};
 
