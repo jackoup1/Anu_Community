@@ -18,6 +18,7 @@ import {
   FaCommentDots,
 } from "react-icons/fa";
 import { getUserInfo } from "../utils/auth";
+import { FaUser, FaUsers } from 'react-icons/fa'; // Add these to your imports
 import logo from "../assets/logo.png";
 
 export default function Assignments() {
@@ -152,6 +153,11 @@ export default function Assignments() {
                 key={idx}
                 className="bg-white p-5 rounded-lg shadow hover:shadow-md transition relative"
               >
+                {/* Team/Solo Icon Badge */}
+                <div className="absolute top-3 right-3 bg-indigo-100 text-indigo-700 rounded-full p-2">
+                  {a.isTeamBased ? <FaUsers title="Team Assignment" /> : <FaUser title="Solo Assignment" />}
+                </div>
+
                 <h2 className="text-xl font-semibold text-indigo-700 mb-1 flex items-center gap-2">
                   <FaBook /> {a.title}
                 </h2>

@@ -7,6 +7,9 @@ export default function AddAssignment() {
   const [title, setTitle] = useState('');
   const [subjectId, setSubjectId] = useState('');
   const [description, setDescription] = useState('');
+  const [isTeamBased, setIsTeamBased] = useState(false);
+  const [minTeamMembers, setMinTeamMembers] = useState('');
+  const [maxTeamMembers, setMaxTeamMembers] = useState('');
   const [dueDate, setDueDate] = useState('');
   const [pdfFile, setPdfFile] = useState<File | null>(null);
   const [subjects, setSubjects] = useState<{ id: number; name: string }[]>([]);
@@ -67,6 +70,9 @@ export default function AddAssignment() {
       dueDate,
       pdfUrl,
       subjectId: Number(subjectId),
+      isTeamBased,
+      minTeamMembers: isTeamBased ? Number(minTeamMembers) : null,
+      maxTeamMembers: isTeamBased ? Number(maxTeamMembers) : null,
     };
 
     try {
@@ -149,6 +155,56 @@ export default function AddAssignment() {
             />
           </div>
 
+          {/* Team Assignment Toggle */}
+          <div className="flex items-center space-x-4">
+            <label className="text-gray-700 font-medium">Assignment Type:</label>
+            <label className="flex items-center space-x-1">
+              <input
+                type="radio"
+                checked={!isTeamBased}
+                onChange={() => setIsTeamBased(false)}
+              />
+              <span>Solo</span>
+            </label>
+            <label className="flex items-center space-x-1">
+              <input
+                type="radio"
+                checked={isTeamBased}
+                onChange={() => setIsTeamBased(true)}
+              />
+              <span>Team</span>
+            </label>
+          </div>
+
+          {isTeamBased && (
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Minimum Team Members</label>
+                <input
+                  type="number"
+                  min="1"
+                  value={minTeamMembers}
+                  onChange={(e) => setMinTeamMembers(e.target.value)}
+                  className="p-2 w-full border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Maximum Team Members</label>
+                <input
+                  type="number"
+                  min={minTeamMembers || 1}
+                  value={maxTeamMembers}
+                  onChange={(e) => setMaxTeamMembers(e.target.value)}
+                  className="p-2 w-full border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  required
+                />
+              </div>
+            </div>
+          )}
+
+
+
           {/* PDF Upload */}
           <div className="relative">
             <FaFilePdf className="absolute top-3.5 left-3 text-gray-400" />
@@ -175,4 +231,3 @@ export default function AddAssignment() {
     </div>
   );
 }
-

@@ -9,7 +9,7 @@ export async function getAssignments(req: AuthRequest, res: Response) {
   const userId = req.user.id;
   const userDepartmentId = req.user.departmentId;
 
-   try {
+  try {
     const assignments = await prisma.assignment.findMany({
       where: {
         subject: {
@@ -46,6 +46,9 @@ export async function addNewAssignment(req: AuthRequest, res: Response) {
     dueDate,
     pdfUrl,
     subjectId,
+    isTeamBased,
+    minTeamMembers,
+    maxTeamMembers,
   } = req.body;
 
   try {
@@ -55,6 +58,9 @@ export async function addNewAssignment(req: AuthRequest, res: Response) {
         description,
         dueDate: new Date(dueDate),
         pdfUrl,
+        isTeamBased,
+        minTeamMembers: isTeamBased ? minTeamMembers : null,
+        maxTeamMembers: isTeamBased ? maxTeamMembers : null,
         creator: {
           connect: {
             id: req.user.id,
