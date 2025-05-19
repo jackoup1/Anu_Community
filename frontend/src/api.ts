@@ -183,3 +183,22 @@ export const getComments = async (assignmentId: number) => {
   return res.json();
 };
 
+export const deleteAssignment = async (assignmentId: number) => {
+  const token = localStorage.getItem("token");
+
+  const res = await fetch(`${BASE_URL}/api/assignments/deleteAssignment`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ assignmentId }),
+  });
+
+  if (!res.ok) {
+    const error = await res.json();
+    throw new Error(error.message || "Failed to delete assignment");
+  }
+
+  return res.json();
+};

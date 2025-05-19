@@ -5,6 +5,7 @@ import {
   downloadPdf,
   addComment,
   getComments,
+  deleteAssignment,
 } from "../api";
 import { useNavigate } from "react-router-dom";
 import {
@@ -199,6 +200,24 @@ export default function Assignments() {
                   >
                     <FaCommentDots /> Comment
                   </button>
+  <button
+    onClick={async () => {
+      const confirmed = window.confirm("Are you sure you want to delete this assignment?");
+      if (!confirmed) return;
+
+      try {
+        await deleteAssignment(a.id);
+        alert("Assignment deleted.");
+        setAssignments(prev => prev.filter(asmt => asmt.id !== a.id));
+      } catch (err: any) {
+        alert(err.message);
+      }
+    }}
+    className="text-red-600 hover:underline text-sm flex items-center gap-1"
+    title="Delete Assignment"
+  >
+    🗑 Delete
+  </button>
                 </div>
               </div>
             );
