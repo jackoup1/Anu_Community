@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createAssignment, getSubjects, uploadPdf } from '../api';
+import { FaBook, FaCalendarAlt, FaFilePdf, FaList, FaBookOpen } from 'react-icons/fa';
 
 export default function AddAssignment() {
   const [title, setTitle] = useState('');
@@ -9,6 +10,7 @@ export default function AddAssignment() {
   const [dueDate, setDueDate] = useState('');
   const [pdfFile, setPdfFile] = useState<File | null>(null);
   const [subjects, setSubjects] = useState<{ id: number; name: string }[]>([]);
+  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
   // Redirect if not authenticated
@@ -26,7 +28,6 @@ export default function AddAssignment() {
       try {
         const data = await getSubjects();
         setSubjects(data);
-        console.log(data);
       } catch (err) {
         console.error('Failed to fetch subjects', err);
       }
@@ -34,30 +35,28 @@ export default function AddAssignment() {
     fetchSubjects();
   }, []);
 
-  // Upload PDF 
-
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
 
     let pdfUrl = '';
     if (pdfFile) {
       if (pdfFile.type !== 'application/pdf') {
-        alert('Please upload a valid PDF file.');
+        setError('Please upload a valid PDF file.');
         return;
       }
 
       const subjectName = subjects.find(s => s.id === Number(subjectId))?.name;
       if (!subjectName) {
-        alert("Subject name couldn't be found.");
+        setError("Subject name couldn't be found.");
         return;
       }
 
       try {
         const fileData = await uploadPdf(pdfFile, subjectName);
-        pdfUrl = fileData.file.path; 
+        pdfUrl = fileData.file.path;
       } catch (err: any) {
-        alert(`Failed to upload PDF: ${err.message}`);
+        setError(`Failed to upload PDF: ${err.message}`);
         return;
       }
     }
@@ -74,36 +73,45 @@ export default function AddAssignment() {
       await createAssignment(newAssignment);
       alert('Assignment added successfully!');
       navigate('/');
-    } catch (error) {
-      alert('Failed to add assignment');
+    } catch {
+      setError('Failed to add assignment');
     }
   };
 
-
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-start p-6">
-      <div className="w-full max-w-2xl">
-        <h1 className="text-3xl font-bold mb-6 text-center text-indigo-700">Add New Assignment</h1>
+    <div className="min-h-screen bg-indigo-50 flex flex-col items-center justify-start p-6">
+      <div className="w-full max-w-2xl bg-white p-8 rounded-2xl shadow-xl">
+        <h1 className="text-3xl font-bold mb-6 text-center text-indigo-700">📝 Add New Assignment</h1>
+
+        {error && (
+          <div className="bg-red-100 text-red-700 px-4 py-2 mb-4 rounded text-sm text-center">
+            {error}
+          </div>
+        )}
+
         <form onSubmit={handleSubmit} className="space-y-6">
-          <div>
-            <label htmlFor="title" className="text-lg font-medium text-gray-700">Title</label>
+          {/* Title */}
+          <div className="relative">
+            <FaBook className="absolute top-3.5 left-3 text-gray-400" />
             <input
               id="title"
               type="text"
+              placeholder="Assignment Title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="border border-gray-300 rounded-lg p-2 w-full shadow focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="pl-10 p-3 w-full border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
               required
             />
           </div>
 
-          <div>
-            <label htmlFor="subject" className="text-lg font-medium text-gray-700">Subject</label>
+          {/* Subject */}
+          <div className="relative">
+            <FaBookOpen className="absolute top-3.5 left-3 text-gray-400" />
             <select
               id="subject"
               value={subjectId}
               onChange={(e) => setSubjectId(e.target.value)}
-              className="border border-gray-300 rounded-lg p-2 w-full shadow focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="pl-10 p-3 w-full border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
               required
             >
               <option value="">Select a subject</option>
@@ -115,44 +123,49 @@ export default function AddAssignment() {
             </select>
           </div>
 
-          <div>
-            <label htmlFor="description" className="text-lg font-medium text-gray-700">Description</label>
+          {/* Description */}
+          <div className="relative">
+            <FaList className="absolute top-3.5 left-3 text-gray-400" />
             <textarea
               id="description"
+              placeholder="Description (optional)"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="border border-gray-300 rounded-lg p-2 w-full shadow focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="pl-10 p-3 w-full border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
               rows={4}
             />
           </div>
 
-          <div>
-            <label htmlFor="dueDate" className="text-lg font-medium text-gray-700">Due Date</label>
+          {/* Due Date */}
+          <div className="relative">
+            <FaCalendarAlt className="absolute top-3.5 left-3 text-gray-400" />
             <input
               id="dueDate"
               type="datetime-local"
               value={dueDate}
               onChange={(e) => setDueDate(e.target.value)}
-              className="border border-gray-300 rounded-lg p-2 w-full shadow focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="pl-10 p-3 w-full border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
               required
             />
           </div>
 
-          <div>
-            <label htmlFor="pdfUpload" className="text-lg font-medium text-gray-700">Upload PDF (Optional)</label>
+          {/* PDF Upload */}
+          <div className="relative">
+            <FaFilePdf className="absolute top-3.5 left-3 text-gray-400" />
             <input
               id="pdfUpload"
               type="file"
               accept="application/pdf"
               onChange={(e) => setPdfFile(e.target.files?.[0] || null)}
-              className="border border-gray-300 rounded-lg p-2 w-full shadow focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="pl-10 p-2 w-full border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
 
+          {/* Submit */}
           <div className="text-right">
             <button
               type="submit"
-              className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+              className="px-6 py-3 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition"
             >
               Add Assignment
             </button>
