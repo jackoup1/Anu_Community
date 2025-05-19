@@ -5,7 +5,7 @@ import Signup from "./pages/Signup";
 
 import Assignments from "./pages/Assignments";
 import AddAssignment from './pages/addAssignment';
-import AddSubject from './pages/admin/AddSubject';
+import AddSubject from './pages/admin/addSubject';
 
 function App() {
   return (

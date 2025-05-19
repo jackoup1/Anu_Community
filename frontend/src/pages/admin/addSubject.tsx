@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getDepartments, createSubject } from '../../api';
-import { getUserRole } from '../../utils/auth';
+import { getUserInfo } from '../../utils/auth';
 
 export default function AddSubject() {
   const [name, setName] = useState('');
@@ -12,7 +12,7 @@ export default function AddSubject() {
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    const role = getUserRole();
+    const role = getUserInfo();
 
     if (!token || role !== 'ADMIN') {
       alert('Access denied. Admins only.');

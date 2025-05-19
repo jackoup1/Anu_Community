@@ -11,7 +11,7 @@ const router = Router();
 
 router.get("/", authUser, getAssignments);
 router.post("/addAssignment", authUser, addNewAssignment);
-router.delete("/deleteAssignment", authorizeAssignmentDelete, deleteAssignment);
+router.delete("/deleteAssignment",authorizeAssignmentDelete, deleteAssignment);
 
 router.get("/:id/comments", authUser, getComments);
 router.post("/addComment", authUser, addComment);

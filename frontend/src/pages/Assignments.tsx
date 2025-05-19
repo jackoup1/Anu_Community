@@ -17,6 +17,8 @@ import {
   FaFilePdf,
   FaCommentDots,
 } from "react-icons/fa";
+import { getUserInfo } from "../utils/auth";
+import logo from "../assets/logo.png";
 
 export default function Assignments() {
   const [assignments, setAssignments] = useState<any[]>([]);
@@ -37,6 +39,9 @@ export default function Assignments() {
 
   const navigate = useNavigate();
   const today = new Date();
+  const userInfo = getUserInfo();
+  const currentUserId = userInfo?.id;
+  const currentUserRole = userInfo?.role;
 
   useEffect(() => {
     (async () => {
@@ -68,8 +73,8 @@ export default function Assignments() {
       tab === "All"
         ? true
         : tab === "Upcoming"
-        ? new Date(a.dueDate) > today
-        : new Date(a.dueDate) <= today
+          ? new Date(a.dueDate) > today
+          : new Date(a.dueDate) <= today
     )
     .filter((a) =>
       subjectFilter === "All" ? true : a.subject?.name === subjectFilter
@@ -88,8 +93,9 @@ export default function Assignments() {
   return (
     <div className="min-h-screen bg-indigo-50 p-6">
       <div className="max-w-6xl mx-auto">
-        <h1 className="text-4xl font-bold text-indigo-700 mb-6 text-center">
-          📘 Assignments Dashboard
+        <h1 className="text-4xl font-bold text-indigo-700 mb-6 text-center flex items-center justify-center gap-2">
+          <img src={logo} alt="Logo" className="h-12 w-12" />
+          Assignments Dashboard
         </h1>
 
         {/* Filters */}
@@ -98,11 +104,10 @@ export default function Assignments() {
             <button
               key={t}
               onClick={() => setTab(t)}
-              className={`px-4 py-2 rounded-full text-sm font-semibold transition ${
-                tab === t
-                  ? "bg-indigo-600 text-white"
-                  : "bg-white text-indigo-600 border border-indigo-300"
-              }`}
+              className={`px-4 py-2 rounded-full text-sm font-semibold transition ${tab === t
+                ? "bg-indigo-600 text-white"
+                : "bg-white text-indigo-600 border border-indigo-300"
+                }`}
             >
               {t}
             </button>
@@ -158,11 +163,10 @@ export default function Assignments() {
                 </div>
 
                 <span
-                  className={`text-xs px-2 py-1 rounded-full ${
-                    isOverdue
-                      ? "bg-red-100 text-red-600"
-                      : "bg-green-100 text-green-600"
-                  }`}
+                  className={`text-xs px-2 py-1 rounded-full ${isOverdue
+                    ? "bg-red-100 text-red-600"
+                    : "bg-green-100 text-green-600"
+                    }`}
                 >
                   {isOverdue ? "Overdue" : "Upcoming"}
                 </span>
@@ -200,24 +204,26 @@ export default function Assignments() {
                   >
                     <FaCommentDots /> Comment
                   </button>
-  <button
-    onClick={async () => {
-      const confirmed = window.confirm("Are you sure you want to delete this assignment?");
-      if (!confirmed) return;
+                  {(currentUserRole === 'ADMIN' || a.creatorId === currentUserId) && (
+                    <button
+                      onClick={async () => {
+                        const confirmed = window.confirm("Are you sure you want to delete this assignment?");
+                        if (!confirmed) return;
 
-      try {
-        await deleteAssignment(a.id);
-        alert("Assignment deleted.");
-        setAssignments(prev => prev.filter(asmt => asmt.id !== a.id));
-      } catch (err: any) {
-        alert(err.message);
-      }
-    }}
-    className="text-red-600 hover:underline text-sm flex items-center gap-1"
-    title="Delete Assignment"
-  >
-    🗑 Delete
-  </button>
+                        try {
+                          await deleteAssignment(a.id);
+                          alert("Assignment deleted.");
+                          setAssignments(prev => prev.filter(asmt => asmt.id !== a.id));
+                        } catch (err: any) {
+                          alert(err.message);
+                        }
+                      }}
+                      className="text-red-600 hover:underline text-sm flex items-center gap-1"
+                      title="Delete Assignment"
+                    >
+                      🗑 Delete
+                    </button>
+                  )}
                 </div>
               </div>
             );

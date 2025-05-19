@@ -9,13 +9,13 @@ interface DecodedToken {
   exp: number;
 }
 
-export function getUserRole(): string | null {
+export function getUserInfo(): { id: number; role: string } | null {
   const token = localStorage.getItem('token');
   if (!token) return null;
 
   try {
     const decoded: DecodedToken = jwtDecode(token);
-    return decoded.role;
+    return { id: decoded.id, role: decoded.role };
   } catch (err) {
     console.error('Failed to decode token:', err);
     return null;
