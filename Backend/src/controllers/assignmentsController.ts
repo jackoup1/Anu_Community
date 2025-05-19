@@ -93,6 +93,8 @@ export async function addComment(req: AuthRequest, res: Response) {
     });
 
     console.log('Comment created:', comment);
+    res.status(201).json({ message: 'Comment added successfully', comment });
+
     return;
 
   } catch (error) {
@@ -117,6 +119,21 @@ export async function deleteAssignment(req: AuthRequest, res: Response) {
     console.error(error);
     res.status(500).json({ message: "internal error please try again" });
     return;
+  }
+}
+// In assignmentsController.ts
+export async function getComments(req: Request, res: Response) {
+  const assignmentId = parseInt(req.params.id);
+  try {
+    const comments = await prisma.comment.findMany({
+      where: { assignmentId },
+      include: { creator: true }, // get username/email
+      orderBy: { createdAt: "desc" },
+    });
+    res.json(comments);
+  } catch (error) {
+    console.error("Error fetching comments:", error);
+    res.status(500).json({ message: "Failed to fetch comments" });
   }
 }
 
