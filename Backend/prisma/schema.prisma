@@ -20,7 +20,8 @@ model User {
   comments           Comment[]
 
   departmentId Int?
-  department   Department? @relation(fields: [departmentId], references: [id])
+  department   Department?   @relation(fields: [departmentId], references: [id])
+  TeamRequest  TeamRequest[]
 }
 
 model Department {
@@ -38,22 +39,23 @@ model Subject {
 }
 
 model Assignment {
-  id             Int      @id @default(autoincrement())
-  title          String
-  description    String?
-  dueDate        DateTime
-  pdfUrl         String?
-  
-  isTeamBased    Boolean  @default(false)
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?
+  dueDate     DateTime
+  pdfUrl      String?
+
+  isTeamBased    Boolean @default(false)
   minTeamMembers Int?
   maxTeamMembers Int?
 
   creatorId Int
   creator   User @relation(fields: [creatorId], references: [id])
 
-  subjectId Int
-  subject   Subject   @relation(fields: [subjectId], references: [id])
-  comments  Comment[]
+  subjectId   Int
+  subject     Subject       @relation(fields: [subjectId], references: [id])
+  comments    Comment[]
+  TeamRequest TeamRequest[]
 }
 
 model Comment {
@@ -68,6 +70,26 @@ model Comment {
   assignment   Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
 }
 
+model TeamRequest {
+  id Int @id @default(autoincrement())
+
+  requesterId Int
+  requester   User @relation(fields: [requesterId], references: [id])
+
+  assignmentId Int
+  assignment   Assignment @relation(fields: [assignmentId], references: [id])
+
+  type RequestType
+
+  message         String?
+  whatsApp        String?
+  currentTeamSize Int?
+
+  createdAt DateTime @default(now())
+
+  @@unique([requesterId, assignmentId, type])
+}
+
 enum Role {
   USER
   ADMIN
@@ -78,4 +100,9 @@ enum Level {
   SECOND
   THIRD
   FOURTH
+}
+
+enum RequestType {
+  JOIN // User wants to join an existing team
+  RECRUIT // User wants to recruit members to their team
 }

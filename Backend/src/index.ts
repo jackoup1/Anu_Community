@@ -6,6 +6,7 @@ import authRouter from './Routes/authRouter';
 import subjectsRouter from './Routes/subjectsRouter';
 import pdfRouter from './Routes/pdfRotuer';
 import departmentsRouter from './Routes/departmentsRouter';
+import teamRequestsRouter from './Routes/teamRequestsRouter';
 
 dotenv.config();
 const app = express();
@@ -25,6 +26,7 @@ app.use('/api/assignments', assignmentsRouter);
 app.use('/api/subjects',subjectsRouter);
 app.use('/api/pdf',pdfRouter);
 app.use('/api/departments',departmentsRouter)
+app.use('/api/TeamRequests',teamRequestsRouter);
 
 
 // Start Server
