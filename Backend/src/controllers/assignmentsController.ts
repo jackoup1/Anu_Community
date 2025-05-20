@@ -139,4 +139,42 @@ export async function getComments(req: Request, res: Response) {
   }
 }
 
+export async function deleteComment(req: AuthRequest, res: Response) {
+  const commentId = parseInt(req.params.id);
+
+  if (isNaN(commentId)) {
+     res.status(400).json({ message: "Invalid comment ID" });
+     return;
+  }
+
+  try {
+    const comment = await prisma.comment.findUnique({
+      where: { id: commentId },
+    });
+
+    if (!comment) {
+       res.status(404).json({ message: "Comment not found" });
+       return
+    }
+
+    const isOwner = comment.creatorId === req.user.id;
+    const isAdmin = req.user.role === "ADMIN";
+
+    if (!isOwner && !isAdmin) {
+       res.status(403).json({ message: "Not authorized to delete this comment" });
+       return
+    }
+
+    await prisma.comment.delete({
+      where: { id: commentId },
+    });
+
+    console.log(`Comment ${commentId} deleted by user ${req.user.id}`);
+    res.json({ message: "Comment deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting comment:", error);
+    res.status(500).json({ message: "Failed to delete comment" });
+  }
+}
+
 

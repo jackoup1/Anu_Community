@@ -202,6 +202,25 @@ export const getComments = async (assignmentId: number) => {
   return res.json();
 };
 
+export const deleteComment = async (commentId: number) => {
+  const token = localStorage.getItem("token");
+
+  const res = await fetch(`${BASE_URL}/api/assignments/deleteComment/${commentId}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!res.ok) {
+    const error = await res.json();
+    throw new Error(error.message || "Failed to delete comment");
+  }
+
+  return res.json();
+};
+
+
 export const getTeamRequests = async () => {
   const token = localStorage.getItem("token");
   const res = await fetch(`${BASE_URL}/api/team-requests`, {

@@ -6,6 +6,7 @@ import {
   addComment,
   getComments,
   deleteAssignment,
+  deleteComment,
 } from "../api";
 import { useNavigate } from "react-router-dom";
 import {
@@ -339,17 +340,35 @@ export default function Assignments() {
               ) : (
                 <ul className="space-y-2 max-h-60 overflow-y-auto pr-2">
                   {comments.map((c, i) => (
-                    <li key={i} className="bg-gray-100 rounded p-2 text-sm">
+                    <li key={i} className="bg-gray-100 rounded p-2 text-sm relative">
                       <p className="text-gray-800">{c.content}</p>
                       <p className="text-xs text-gray-500 mt-1">
-                        By{" "}
-                        <strong>
-                          {c.creator?.username || c.creator?.email || "User"}
-                        </strong>{" "}
-                        — {new Date(c.createdAt).toLocaleString()}
+                        By <strong>{c.creator?.username || c.creator?.email || "User"}</strong> —{" "}
+                        {new Date(c.createdAt).toLocaleString()}
                       </p>
+
+                      {(currentUserRole === "ADMIN" || c.creatorId === currentUserId) && (
+                        <button
+                          onClick={async () => {
+                            const confirmed = window.confirm("Are you sure you want to delete this comment?");
+                            if (!confirmed) return;
+
+                            try {
+                              await deleteComment(c.id); // API call
+                              setComments(prev => prev.filter(cm => cm.id !== c.id)); // update UI
+                            } catch (err: any) {
+                              alert(err.message || "Failed to delete comment");
+                            }
+                          }}
+                          className="absolute top-2 right-2 text-red-500 text-xs hover:underline"
+                          title="Delete Comment"
+                        >
+                          🗑
+                        </button>
+                      )}
                     </li>
                   ))}
+
                 </ul>
               )}
 
