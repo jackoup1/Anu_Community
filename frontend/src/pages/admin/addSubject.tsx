@@ -11,10 +11,9 @@ export default function AddSubject() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    const role = getUserInfo();
+    const token = getUserInfo();
 
-    if (!token || role !== 'ADMIN') {
+    if (!token || token.role !== 'ADMIN') {
       alert('Access denied. Admins only.');
       navigate('/login');
     }
