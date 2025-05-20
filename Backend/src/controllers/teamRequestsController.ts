@@ -10,13 +10,13 @@ export async function getAllTeamRequests(req: Request, res: Response) {
         const teamRequests = await prisma.teamRequest.findMany({
             include: {
                 requester: { select: { id: true, username: true, email: true } },
-                assignment: { select: { id: true, title: true, isTeamBased: true } }
+                assignment: { select: { id: true, title: true, isTeamBased: true, maxTeamMembers: true } }
             },
             orderBy: { createdAt: 'asc' }
         });
 
         if (!teamRequests) {
-            res.status(404).json({ message: "No team requests found" });
+            res.json({ message: "No team requests found" });
             return
         }
         res.status(200).json(teamRequests);
@@ -49,7 +49,10 @@ export async function createTeamRequest(req: AuthRequest, res: Response) {
                 },
             },
         });
-
+        if (existing) {
+            res.status(400).json({ message: 'You have already made same request to this assignment' });
+            return;
+        }
         const newTeamRequest = await prisma.teamRequest.create({
             data: {
                 assignmentId,

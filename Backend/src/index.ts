@@ -26,7 +26,7 @@ app.use('/api/assignments', assignmentsRouter);
 app.use('/api/subjects',subjectsRouter);
 app.use('/api/pdf',pdfRouter);
 app.use('/api/departments',departmentsRouter)
-app.use('/api/TeamRequests',teamRequestsRouter);
+app.use('/api/team-requests',teamRequestsRouter);
 
 
 // Start Server

@@ -1,4 +1,3 @@
-
 const BASE_URL = "http://localhost:3000";
 
 export const loginUser = async (email: string, password: string) => {
@@ -10,15 +9,15 @@ export const loginUser = async (email: string, password: string) => {
   return res.json();
 };
 
-
 export const signupUser = async (email: string, password: string, username: string, departmentId: Number, level: String) => {
   const res = await fetch(`${BASE_URL}/api/authenticate/signup`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password, username,departmentId, level }),
+    body: JSON.stringify({ email, password, username, departmentId, level }),
   });
   return res.json();
 };
+
 
 export const getAssignments = async () => {
   const token = localStorage.getItem("token");
@@ -32,16 +31,6 @@ export const getAssignments = async () => {
 
   return res.json();
 };
-
-
-export const getDepartments = async () => {
-  const res = await fetch(`${BASE_URL}/api/departments`);
-  if (!res.ok) {
-    throw new Error("Failed to fetch departments");
-  }
-  return res.json(); // returns an array of departments
-};
-
 
 export const createAssignment = async (assignmentData: any) => {
   const token = localStorage.getItem("token");
@@ -71,7 +60,37 @@ export const createAssignment = async (assignmentData: any) => {
   return res.json();
 };
 
+export const deleteAssignment = async (assignmentId: number) => {
+  const token = localStorage.getItem("token");
 
+  const res = await fetch(`${BASE_URL}/api/assignments/deleteAssignment`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ assignmentId }),
+  });
+
+  if (!res.ok) {
+    const error = await res.json();
+    throw new Error(error.message || "Failed to delete assignment");
+  }
+
+  return res.json();
+};
+
+
+
+
+
+export const getDepartments = async () => {
+  const res = await fetch(`${BASE_URL}/api/departments`);
+  if (!res.ok) {
+    throw new Error("Failed to fetch departments");
+  }
+  return res.json(); // returns an array of departments
+};
 
 
 export const getSubjects = async () => {
@@ -85,7 +104,7 @@ export const getSubjects = async () => {
     throw new Error("Failed to fetch subjects");
   }
 
-  return res.json(); 
+  return res.json();
 };
 
 export async function createSubject(subjectData: { name: string; departmentIds: number[] }) {
@@ -100,6 +119,7 @@ export async function createSubject(subjectData: { name: string; departmentIds: 
   if (!res.ok) throw new Error('Failed to create subject');
   return await res.json();
 }
+
 
 // API call to upload PDF file
 export const uploadPdf = async (file: File, subjectName: string) => {
@@ -121,8 +141,6 @@ export const uploadPdf = async (file: File, subjectName: string) => {
 
   return res.json();
 };
-
-
 
 export const servePdf = async (pdfUrl: string) => {
   try {
@@ -166,6 +184,7 @@ export const addComment = async (assignmentId: number, content: string) => {
 
   return res.json();
 };
+
 export const getComments = async (assignmentId: number) => {
   const token = localStorage.getItem("token");
 
@@ -183,21 +202,47 @@ export const getComments = async (assignmentId: number) => {
   return res.json();
 };
 
-export const deleteAssignment = async (assignmentId: number) => {
+export const getTeamRequests = async () => {
   const token = localStorage.getItem("token");
+  const res = await fetch(`${BASE_URL}/api/team-requests`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
 
-  const res = await fetch(`${BASE_URL}/api/assignments/deleteAssignment`, {
-    method: "DELETE",
+  if (!res.ok) {
+    throw new Error(`HTTP error! status: ${res.status}`);
+  }
+
+  return res.json();
+};
+
+export const createTeamRequest = async (teamRequestData: {
+  assignmentId: number;
+  message?: string;
+  whatsApp?: string;
+  type: "JOIN" | "RECRUIT";
+  currentTeamSize?: number;
+}) => {
+  const token = localStorage.getItem("token");
+  const res = await fetch(`${BASE_URL}/api/team-requests`, {
+    method: "POST",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify({ assignmentId }),
+    body: JSON.stringify(teamRequestData),
   });
 
+  if (res.status === 401) {
+    throw new Error("No token provided or token is missing. Please log in again.");
+  }
+
+  if (res.status === 403) {
+    throw new Error("Token is invalid or expired. Please log in again.");
+  }
+
   if (!res.ok) {
-    const error = await res.json();
-    throw new Error(error.message || "Failed to delete assignment");
+    const errorBody = await res.json();
+    throw new Error(errorBody.message || "Failed to create team request");
   }
 
   return res.json();

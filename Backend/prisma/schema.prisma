@@ -82,7 +82,7 @@ model TeamRequest {
   type RequestType
 
   message         String?
-  whatsApp        String?
+  whatsApp        String
   currentTeamSize Int?
 
   createdAt DateTime @default(now())

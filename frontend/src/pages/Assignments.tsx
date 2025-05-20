@@ -154,8 +154,24 @@ export default function Assignments() {
                 className="bg-white p-5 rounded-lg shadow hover:shadow-md transition relative"
               >
                 {/* Team/Solo Icon Badge */}
-                <div className="absolute top-3 right-3 bg-indigo-100 text-indigo-700 rounded-full p-2">
-                  {a.isTeamBased ? <FaUsers title="Team Assignment" /> : <FaUser title="Solo Assignment" />}
+                <div className="absolute top-3 right-3 flex flex-col items-end gap-1">
+                  <div className="bg-indigo-100 text-indigo-700 rounded-full p-2">
+                    {a.isTeamBased ? (
+                      <FaUsers title="Team Assignment" />
+                    ) : (
+                      <FaUser title="Solo Assignment" />
+                    )}
+                  </div>
+
+                  {a.isTeamBased && (
+                    <button
+                      onClick={() => navigate("/team-requests")}
+                      className="mt-1 text-xs text-white bg-indigo-600 px-2 py-1 rounded hover:bg-indigo-700 transition cursor-pointer"
+                      title="Find teammates"
+                    >
+                      Looking for a Team?
+                    </button>
+                  )}
                 </div>
 
                 <h2 className="text-xl font-semibold text-indigo-700 mb-1 flex items-center gap-2">
@@ -187,7 +203,7 @@ export default function Assignments() {
                     className="text-indigo-600 hover:underline text-sm flex items-center gap-1"
                     title="View Details"
                   >
-                    <FaEye /> View
+                    <FaEye /> View Details
                   </button>
 
                   {a.pdfUrl && (
@@ -245,7 +261,7 @@ export default function Assignments() {
         {/* Floating Add Button */}
         <button
           onClick={() => navigate("/add-assignment")}
-          className="fixed bottom-6 right-6 bg-indigo-600 text-white p-4 rounded-full shadow-lg hover:bg-indigo-700 transition"
+          className="fixed bottom-6 right-6 bg-indigo-600 text-white p-4 rounded-full shadow-lg hover:bg-indigo-700 transition cursor-pointer"
           title="Add Assignment"
         >
           <FaPlus />
@@ -268,6 +284,26 @@ export default function Assignments() {
                 <strong>Description:</strong>{" "}
                 {selectedAssignment.description || "N/A"}
               </p>
+              <p className="mb-2 flex items-center gap-2">
+                <strong>Type:</strong>
+                {selectedAssignment.isTeamBased ? (
+                  <>
+                    <FaUsers className="text-indigo-600" />
+                    <span>Team Project</span>
+                  </>
+                ) : (
+                  <>
+                    <FaUser className="text-indigo-600" />
+                    <span>Solo Assignment</span>
+                  </>
+                )}
+              </p>
+
+              {selectedAssignment.isTeamBased && (
+                <p className="mb-2">
+                  <strong>Team Size:</strong> {selectedAssignment.minTeamMembers} - {selectedAssignment.maxTeamMembers} members
+                </p>
+              )}
               <p className="mb-2">
                 <strong>Due:</strong>{" "}
                 {new Date(selectedAssignment.dueDate).toLocaleString()}

@@ -6,6 +6,8 @@ import Signup from "./pages/Signup";
 import Assignments from "./pages/Assignments";
 import AddAssignment from './pages/addAssignment';
 import AddSubject from './pages/admin/addSubject';
+import TeamRequests from './pages/TeamRequests';
+import AddTeamRequest from './pages/CreateTeamRequest';
 
 function App() {
   return (
@@ -40,6 +42,8 @@ function App() {
             </Layout>
           }
         />
+         <Route path="/team-requests" element={<Layout><TeamRequests /></Layout>} />
+        <Route path="/create-team-request" element={<Layout><AddTeamRequest /></Layout>} />
       </Routes>
     </Router>
   );
